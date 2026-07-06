@@ -31,11 +31,13 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
-      - name: Terraform Format
-        run: terraform fmt -recursive ../../..
+      # ✅ Proper formatting (run from root of repo)
+      - name: Terraform Format Check
+        run: terraform fmt -check -recursive
 
+      # ✅ Proper backend init (fix for your error)
       - name: Terraform Init
-        run: terraform init -backend=false
+        run: terraform init -reconfigure
 
       - name: Terraform Validate
         run: terraform validate
@@ -49,10 +51,12 @@ jobs:
         run: |
           terraform plan \
             -var-file=${{ matrix.environment }}.tfvars \
-            -refresh=false \
-            -lock=false \
+            -input=false \
             -no-color \
-            > plan_output.txt
+            -out=tfplan
+
+      - name: Save Plan Output (Readable)
+        run: terraform show -no-color tfplan > plan_output.txt
 
       - name: Upload Plan
         uses: actions/upload-artifact@v4
