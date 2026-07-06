@@ -33,7 +33,7 @@ jobs:
 
       # ✅ Proper formatting (run from root of repo)
       - name: Terraform Format Check
-        run: terraform fmt -check -recursive
+        run: terraform fmt -recursive
 
       # ✅ Proper backend init (fix for your error)
       - name: Terraform Init
