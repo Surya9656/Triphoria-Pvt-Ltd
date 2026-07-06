@@ -31,11 +31,11 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
-      # ✅ Format check
+      #  Format check
       - name: Terraform Format Check
         run: terraform fmt -check -recursive
 
-      # ✅ INIT (FIX: ADD ENV HERE)
+      #  INIT (FIX: ADD ENV HERE)
       - name: Terraform Init
         env:
           AWS_ACCESS_KEY_ID: dummy
