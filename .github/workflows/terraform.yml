@@ -31,17 +31,23 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
-      # ✅ Proper formatting (run from root of repo)
+      # ✅ Format check
       - name: Terraform Format Check
-        run: terraform fmt -recursive
+        run: terraform fmt -check -recursive
 
-      # ✅ Proper backend init (fix for your error)
+      # ✅ INIT (FIX: ADD ENV HERE)
       - name: Terraform Init
+        env:
+          AWS_ACCESS_KEY_ID: dummy
+          AWS_SECRET_ACCESS_KEY: dummy
+          AWS_DEFAULT_REGION: ap-south-1
         run: terraform init -reconfigure
 
+      # Validate
       - name: Terraform Validate
         run: terraform validate
 
+      # Plan
       - name: Terraform Plan
         env:
           AWS_ACCESS_KEY_ID: dummy
@@ -55,9 +61,11 @@ jobs:
             -no-color \
             -out=tfplan
 
-      - name: Save Plan Output (Readable)
+      # Convert plan to readable file
+      - name: Save Plan Output
         run: terraform show -no-color tfplan > plan_output.txt
 
+      # Upload artifact
       - name: Upload Plan
         uses: actions/upload-artifact@v4
         with:
