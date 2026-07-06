@@ -325,5 +325,7 @@ terraform apply
 ## Author
 **Surya Kandipalli**
 **DevOps Engineer**
+
+
 <img width="1920" height="1080" alt="Screenshot 2026-07-06 160954" src="https://github.com/user-attachments/assets/49622d94-9b93-4c1d-ae0c-289f7a99b7f4" />
 <img width="1920" height="1080" alt="Screenshot 2026-07-06 143743" src="https://github.com/user-attachments/assets/d6e900b8-ab8f-46eb-b695-aa0db07ab8a2" />
