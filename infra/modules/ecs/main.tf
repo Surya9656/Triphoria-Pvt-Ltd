@@ -173,9 +173,9 @@ resource "aws_ecs_service" "this" {
   launch_type   = "FARGATE"
 
   network_configuration {
-    subnets          = var.public_subnet_ids   # ✅ FIXED
+    subnets          = var.public_subnet_ids # ✅ FIXED
     security_groups  = [var.ecs_security_group_id]
-    assign_public_ip = true                    # ✅ FIXED
+    assign_public_ip = true # ✅ FIXED
   }
 
   load_balancer {
