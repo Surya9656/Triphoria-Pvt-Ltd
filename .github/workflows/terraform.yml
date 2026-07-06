@@ -1,6 +1,12 @@
 name: Terraform Validation
 
 on:
+  workflow_dispatch:
+
+  push:
+    branches:
+      - main
+
   pull_request:
     paths:
       - "infra/**"
@@ -61,8 +67,7 @@ jobs:
             -refresh=false \
             -lock=false \
             -no-color \
-            -out=tfplan.binary \
-            | tee plan_output.txt
+            -out=tfplan.binary | tee plan_output.txt
         continue-on-error: true
 
       - name: Upload Terraform Plan
@@ -71,22 +76,23 @@ jobs:
           name: terraform-plan-${{ matrix.environment }}
           path: infra/envs/${{ matrix.environment }}/plan_output.txt
 
-      - name: Comment Terraform Plan on PR
+      - name: Comment Terraform Plan on Pull Request
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v7
         with:
           script: |
             const fs = require('fs');
-            const path = 'infra/envs/${{ matrix.environment }}/plan_output.txt';
 
-            let plan = "No Terraform plan output found.";
+            const planPath = 'infra/envs/${{ matrix.environment }}/plan_output.txt';
 
-            if (fs.existsSync(path)) {
-              plan = fs.readFileSync(path, 'utf8');
+            let plan = "No plan output found.";
+
+            if (fs.existsSync(planPath)) {
+              plan = fs.readFileSync(planPath, 'utf8');
             }
 
             if (plan.length > 60000) {
-              plan = plan.substring(0, 60000) + "\n\n...output truncated...";
+              plan = plan.substring(0, 60000) + "\n\n...Output Truncated...";
             }
 
             github.rest.issues.createComment({
@@ -94,24 +100,24 @@ jobs:
               repo: context.repo.repo,
               issue_number: context.issue.number,
               body: `
-              ## Terraform Validation - ${{ matrix.environment }}
+## Terraform Validation - ${{ matrix.environment }}
 
-              | Check | Status |
-              |------|--------|
-              | Format | ${{ steps.fmt.outcome }} |
-              | Init | ${{ steps.init.outcome }} |
-              | Validate | ${{ steps.validate.outcome }} |
-              | Plan | ${{ steps.plan.outcome }} |
+| Step | Status |
+|------|--------|
+| Terraform fmt | **${{ steps.fmt.outcome }}** |
+| Terraform init | **${{ steps.init.outcome }}** |
+| Terraform validate | **${{ steps.validate.outcome }}** |
+| Terraform plan | **${{ steps.plan.outcome }}** |
 
-              <details>
-              <summary>Terraform Plan</summary>
+<details>
+<summary>Terraform Plan</summary>
 
-              \`\`\`
-              ${plan}
-              \`\`\`
+\`\`\`
+${plan}
+\`\`\`
 
-              </details>
-              `
+</details>
+`
             });
 
       - name: Fail Workflow if Validation Failed
