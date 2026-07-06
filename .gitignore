@@ -1,0 +1,27 @@
+# Terraform
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfplan
+*.tfplan.*
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+
+# Never commit real secrets
+*.auto.tfvars
+secrets.tfvars
+
+# Local backups (keep the folder, ignore the dumps)
+backups/*.dump
+!backups/.gitkeep
+
+# OS / editor
+.DS_Store
+.vscode/
+*.swp
